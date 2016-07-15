@@ -50,7 +50,7 @@
    {% for journal in journals %}
       <tr>
           <th>{{ forloop.counter }}</th>
-          <th><a href="#">{{ journal.name }}</a></th>
+          <th><a href="{% url "students_edit" journal.id %}">{{ journal.name }}</a></th>
           {% for i in 30|get_range %}
           <th><input type="checkbox" {% if i|add:"1" in journal.checked %}checked{% endif %}></th>
           {% endfor %}
