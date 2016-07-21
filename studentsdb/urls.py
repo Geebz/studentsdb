@@ -1,8 +1,8 @@
-from django.conf.urls import include, url
+from django.conf.urls import include, url, patterns
 from django.contrib import admin
-from students import views
+from .settings import MEDIA_ROOT, DEBUG
 
-urlpatterns = [
+urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'studentsdb.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
@@ -17,4 +17,11 @@ urlpatterns = [
     url(r'^groups/(?P<gid>\d+)/edit/$', 'students.views.groups.groups_edit', name='groups_edit'),
     url(r'^groups/(?P<gid>\d+)/delete/$', 'students.views.groups.groups_delete', name='groups_delete'),
     url(r'^journal/$', 'students.views.journal.journal_list', name='journal'),
-]
+)
+
+if DEBUG:
+    # serve files from media folder
+    urlpatterns += patterns('',
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+    'document_root': MEDIA_ROOT}))
+
