@@ -2,8 +2,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from ..models import Student
-from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-
+# from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from Classes.PaginatorCustom import PaginatorCustom,EmptyPage,PageNotInteger
 
 # Views for student
 def students_list(request):
@@ -17,11 +17,20 @@ def students_list(request):
     else:
         students = students.order_by('last_name')
 
-    paginator = Paginator(students, 3)
+    # paginator = Paginator(students, 3)
+    # page = request.GET.get('page')
+    # try:
+    #     students = paginator.page(page)
+    # except PageNotAnInteger:
+    #     students = paginator.page(1)
+    # except EmptyPage:
+    #     students = paginator.page(paginator.num_pages)
+
+    paginator = PaginatorCustom(students, 3)
     page = request.GET.get('page')
     try:
         students = paginator.page(page)
-    except PageNotAnInteger:
+    except PageNotInteger:
         students = paginator.page(1)
     except EmptyPage:
         students = paginator.page(paginator.num_pages)
