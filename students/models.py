@@ -41,7 +41,8 @@ class Student(models.Model):
         blank=False,
         verbose_name=u"Білет")
 
-    student_group = models.ForeignKey('Group',
+    student_group = models.ForeignKey(
+        'Group',
         verbose_name=u"Група",
         blank=False,
         null=True,
@@ -67,7 +68,8 @@ class Group(models.Model):
         blank=False,
         verbose_name=u"Назва")
 
-    leader = models.OneToOneField('Student',
+    leader = models.OneToOneField(
+        'Student',
         verbose_name=u"Староста",
         blank=True,
         null=True,
