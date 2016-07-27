@@ -40,7 +40,7 @@ class PaginatorCustom:
 
         return Page(*args, **kwargs)
 
-    def _get_page_range(self):
+    def _get_page_range(self): #copypaste
         """
         Returns a 1-based range of pages for iterating through within
         a template for loop.

@@ -3,9 +3,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from ..models import Student
 # from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-from Classes.PaginatorCustom import PaginatorCustom,EmptyPage,PageNotInteger
+from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
 
 # Views for student
+
+
 def students_list(request):
     students = Student.objects.all()
     # order student list
