@@ -1,14 +1,11 @@
-def to_alternating_case(string):
-    value = ''
-    for elem in string:
-        if elem.isupper():
-            value += elem.lower()
-        elif elem.islower():
-            value += elem.upper()
-        else:
-            value+=elem
-    return value
+arr = [[10,0],[3,5],[5,8]]
 
-
-print to_alternating_case('12345adad')
-
+def number(bus_stops):
+    total = 0
+    for pair in bus_stops:
+        for ind,pas in enumerate(pair):
+            if ind==0:
+                total+=pas
+            if ind==1:
+                total-=pas
+    return total

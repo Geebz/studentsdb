@@ -46,7 +46,8 @@
    </thead>
    <tbody>
    {% for student in students %}
-      <tr>
+       <div id="stud">
+       <tr>
          <td>{{ forloop.counter }}
          </td>
          <td>{% if student.photo %}
@@ -78,10 +79,35 @@
             </div>
          </td>
       </tr>
+      </div>
    {% endfor %}
    </tbody>
    {% endwith %}
    </table>
         <!-- End Students Listing -->
-    {% include "students/pagination_bar.html" %}
+{#    {% include "students/pagination_bar.html" %}#}
+    <div class="col-xs-12 text-center">
+        <a href="#">Load More</a>
+    </div>
+    <p class="totop pull-right">
+        <a href="#top">Back to top</a>
+    </p>
 {% endblock content %}
+{#{% block extra_js %}#}
+{#    <script type="text/javascript">#}
+{#        $(function() {#}
+{#            console.log('I am here');#}
+{#            $("#stud").slice(0, 4).show();#}
+{#            $("#loadMore").on('click', function(e) {#}
+{#                e.preventDefault();#}
+{#                $("div:hidden").slice(0, 4).slideDown();#}
+{#                if ($("div:hidden").length == 0) {#}
+{#                    $("#load").fadeOut('slow');#}
+{#                }#}
+{#                $('html,body').animate({#}
+{#                    scrollTop: $(this).offset().top#}
+{#                }, 1500);#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+{#{% endblock extra_js %}#}
