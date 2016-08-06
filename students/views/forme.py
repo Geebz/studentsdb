@@ -1,11 +1,12 @@
-arr = [[10,0],[3,5],[5,8]]
+class Zalupa(object):
+    def __init__(self,arm,let):
+        self.arm = arm
+        self.let = let
 
-def number(bus_stops):
-    total = 0
-    for pair in bus_stops:
-        for ind,pas in enumerate(pair):
-            if ind==0:
-                total+=pas
-            if ind==1:
-                total-=pas
-    return total
+    def lol(self):
+        return 2*self.arm
+
+
+lol = Zalupa(1 , 2)
+asd = lol
+print asd.lol()

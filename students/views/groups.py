@@ -2,27 +2,34 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from ..models import Group
+from Classes.PaginatorCustom import PaginatorCustom,PageNotInteger,EmptyPage
 # Views for groups
 
 def groups_list(request):
-    groups = (
-        {'id': 1,
-         'name': u'ФБ-32',
-         'leader': {'id': 1, 'name': u'Олексій Санак'}},
-        {'id': 2,
-         'name': u'ФБ-31',
-         'leader': {'id': 2, 'name': u'Євгеній Лупан'}},
-        {'id': 3,
-         'name': u'ФФ-32',
-         'leader': {'id': 3, 'name': u'Оліфер Леонід'}},
-    )
-    return render(request,'students/groups.html', {'groups':groups})
+    groups = Group.objects.all()
+    order_by = request.GET.get('order_by', '')
+    if order_by in ('title', 'leader', 'id'):
+        groups = groups.order_by(order_by)
+        if request.GET.get('reverse', '') == '1':
+            groups = groups.reverse()
+    else:
+        groups = groups.order_by('title')
+    paginator = PaginatorCustom(groups, 3)
+    page = request.GET.get('page')
+    try:
+        groups = paginator.page(page)
+    except PageNotInteger:
+        groups = paginator.page(1)
+    except EmptyPage:
+        groups = paginator.page(paginator.num_pages)
+    return render(request, 'students/groups.html', {'groups': groups})
 
 def groups_add(request):
     return HttpResponse('<h1>Groups Add Form</h1>')
 
-def groups_edit(request, sid):
-    return HttpResponse('<h1>Groups Edit %s</h1>' % sid)
+def groups_edit(request, gid):
+    return HttpResponse('<h1>Groups Edit %s</h1>' % gid)
 
-def groups_delete(request, sid):
-    return HttpResponse('<h1>Groups Delete %s</h1>' % sid)
+def groups_delete(request, gid):
+    return HttpResponse('<h1>Groups Delete %s</h1>' % gid)

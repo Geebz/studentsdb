@@ -9,11 +9,26 @@
     <a class="btn btn-primary" href="{% url "groups_add" %}">Додати Групу</a>
        <!-- Start Students Listing -->
        <table class="table table-hover table-striped">
+       {% with order_by=request.GET.order_by reverse=request.GET.reverse %}
        <thead>
           <tr>
-             <th><a href="">No</a></th>
-             <th><a href="">Назва &uarr;</a></th>
-             <th><a href="#">Староста</a></th>
+             <th><a href="{% url "groups" %}?order_by=id{% if order_by == 'id' and reverse != '1' %}&amp;reverse=1{% endif %}">No
+             {% if order_by == 'id' and reverse != '1' %}&darr;
+             {% elif order_by == 'id' and reverse == '1' %} &uarr;
+             {% endif %}
+             </a></th>
+             <th><a href="{% url "groups" %}{% if not order_by and not reverse %}?order_by=title&amp;reverse=1{% endif %}">
+                 Назва
+             {% if not order_by and not reverse %}&uarr;
+             {% elif order_by == 'title' and reverse == '1' %}&darr;
+             {% endif %}
+             </a></th>
+             <th><a href="{% url "groups" %}?order_by=leader{% if order_by == 'leader' and reverse != '1' %}&amp;reverse=1{% endif %}">
+                 Староста
+             {% if order_by == 'leader' and reverse != '1' %}&uarr;
+             {% elif order_by == 'leader' and reverse == '1' %}&darr;
+             {% endif %}
+             </a></th>
              <th>Дії</th>
           </tr>
        </thead>
@@ -21,8 +36,12 @@
        {% for group in groups %}
           <tr>
              <td>{{ forloop.counter }}</td>
-             <td><a title="Редагувати" href="#">{{ group.name }}</a></td>
-             <td><a title="Редагувати" href="">{{ group.leader.name }}</a></td>
+             <td><a title="Редагувати" href="#">{{ group.title }}</a></td>
+             <td><a title="Редагувати" href="">
+                 {% if group.leader == None %}Старосту не вибрано
+                 {% else %}{{ group.leader }}
+                 {% endif %}
+             </a></td>
              <td>
                 <div class="dropdown">
                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
@@ -45,6 +64,7 @@
           </tr>
        {% endfor %}
        </tbody>
+       {% endwith %}
        </table>
     <!-- End Students Listing -->
     {% include "students/pagination_bar.html" %}
