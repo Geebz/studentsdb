@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^groups/(?P<gid>\d+)/edit/$', 'students.views.groups.groups_edit', name='groups_edit'),
     url(r'^groups/(?P<gid>\d+)/delete/$', 'students.views.groups.groups_delete', name='groups_delete'),
     url(r'^journal/$', 'students.views.journal.journal_list', name='journal'),
+    url(r'^exams/$', 'students.views.exams.exams_list', name='exams')
 )
 
 if DEBUG:
