@@ -16,9 +16,5 @@
 {% endblock status_message%}
 
 {% block content %}
-    <form action="{% url "contact_admin" %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <input type="submit" value="Надіслати" name="send_button" />
-    </form>
+    {% crispy form %}
 {% endblock content %}

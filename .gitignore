@@ -90,3 +90,4 @@ ENV/
 # Rope project settings
 .ropeproject
 studentsdb/db.py
+studentsdb/mail_settings.py

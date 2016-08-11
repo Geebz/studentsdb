@@ -4,7 +4,7 @@ from django import forms
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from studentsdb.settings import ADMIN_EMAIL
+from studentsdb.mail_settings import ADMIN_EMAIL
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
@@ -55,8 +55,8 @@ def contact_admin(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
             from_mail = form.cleaned_data['from_email']
+            message = form.cleaned_data['message']+'\nmail: '+from_mail
             try:
                 send_mail(subject, message, from_mail, [ADMIN_EMAIL])
             except Exception:
