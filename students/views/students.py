@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from ..models import Student, Group
@@ -6,7 +7,7 @@ from django.core.urlresolvers import reverse
 # from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
 from datetime import datetime
-
+from django.contrib import messages
 # Views for student
 
 
@@ -87,20 +88,25 @@ def students_add(request):
                     data['student_group'] = groups[0]
             photo = request.FILES.get('photo')
             if photo:
-                data['photo'] = photo
-
+                if round(photo.size/1024/1024) > 2:
+                    errors['photo'] = u'Допустимий розмір файл 2мб'
+                elif photo.content_type not in ('image/png', 'image/jpeg'):
+                    errors['photo'] = u'Невірний тип файлу'
+                else:
+                    data['photo'] = photo
             if not errors:
                 student = Student(**data)
                 student.save()
-                return HttpResponseRedirect(u'%s?status_message=Студента %s %s успішно додано' %
-                                            (reverse('home'), data['first_name'], data['last_name']))
+                messages.success(request, u'Студента %s %s успішно додано' % (last_name,first_name))
+                return HttpResponseRedirect(reverse('home'), {messages.get_messages(request)})
             else:
                 return render(request, 'students/students_add.html', {
                     'groups': Group.objects.all().order_by('title'),
                     'errors': errors
                 })
         elif request.POST.get('cancel_button') is not None:
-            return HttpResponseRedirect(u'%s?status_message=Додавання студента скасовано' % reverse('home'))
+            messages.info(request, u'Додавання студента скасовано')
+            return HttpResponseRedirect(reverse('home'), {messages.get_messages(request)})
     else:
         return render(request, 'students/students_add.html', {'groups': Group.objects.all().order_by('title')})
 
