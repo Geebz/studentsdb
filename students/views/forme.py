@@ -1,3 +1,3 @@
-from __future__ import division
+Name, Age, Pay = range(3)
 
-print round(28013/1024/1024,3)
+ian = ['ad',32,1]

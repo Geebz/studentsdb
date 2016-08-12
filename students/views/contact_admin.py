@@ -2,12 +2,13 @@
 from django.shortcuts import render
 from django import forms
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse,reverse_lazy
 from studentsdb.mail_settings import ADMIN_EMAIL
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
+from django.views.generic.edit import FormView
 
 
 
@@ -50,21 +51,40 @@ class ContactForm(forms.Form):
     )
 
 
-def contact_admin(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            subject = form.cleaned_data['subject']
-            from_mail = form.cleaned_data['from_email']
-            message = form.cleaned_data['message']+'\nmail: '+from_mail
-            try:
-                send_mail(subject, message, from_mail, [ADMIN_EMAIL])
-            except Exception:
-                messages.warning(request, u'Під час відправки листа відбулась неочікувана помилка.'
-                                          u' Будь-ласка спробуйте пізніше')
-            else:
-                messages.success(request, u'Листа успішно відправлено!')
-            return HttpResponseRedirect(reverse('contact_admin'), {messages.get_messages(request)})
-    else:
-        form = ContactForm
-    return render(request, 'contact_admin/form.html', {'form': form})
+# def contact_admin(request):
+#     if request.method == 'POST':
+#         form = ContactForm(request.POST)
+#         if form.is_valid():
+#             subject = form.cleaned_data['subject']
+#             from_mail = form.cleaned_data['from_email']
+#             message = form.cleaned_data['message']+'\nmail: '+from_mail
+#             try:
+#                 send_mail(subject, message, from_mail, [ADMIN_EMAIL])
+#             except Exception:
+#                 messages.warning(request, u'Під час відправки листа відбулась неочікувана помилка.'
+#                                           u' Будь-ласка спробуйте пізніше')
+#             else:
+#                 messages.success(request, u'Листа успішно відправлено!')
+#             return HttpResponseRedirect(reverse('contact_admin'))
+#     else:
+#         form = ContactForm
+#     return render(request, 'contact_admin/form.html', {'form': form})
+
+class ContactView(FormView):
+    template_name = 'contact_admin/form.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('contact_admin')
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        from_mail = form.cleaned_data['from_email']
+        message = form.cleaned_data['message'] + '\nmail: ' + from_mail
+        try:
+            send_mail(subject, message, from_mail, [ADMIN_EMAIL])
+        except Exception:
+            messages.warning(self.request, u'Під час відправки листа відбулась неочікувана помилка.'
+                                           u'Будь-ласка спробуйте пізніше')
+        else:
+            messages.success(self.request, u'Листа успішно відправлено!')
+
+        return super(ContactView, self).form_valid(form)
