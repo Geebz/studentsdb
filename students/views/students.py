@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
 from datetime import datetime
 from django.contrib import messages
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, DeleteView
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button
@@ -59,6 +59,7 @@ class StudentForm(ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
         self.helper.form_class = 'form-horizontal'
+        self.helper.attrs = {'novalidate': ''}
 
         # set form field properties
         self.helper.help_text_inline = True
@@ -101,7 +102,7 @@ class StudentCreateView(CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
-            messages.warning(self.request, u'Додавання студента відмінено')
+            messages.info(self.request, u'Додавання студента відмінено')
             return HttpResponseRedirect(reverse('home'))
         else:
             return super(StudentCreateView, self).post(request, *args, **kwargs)
@@ -123,12 +124,24 @@ class StudentUpdateView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
-            messages.warning(self.request, u'Редагування студента відмінено')
+            messages.info(self.request, u'Редагування студента відмінено')
             return HttpResponseRedirect(reverse('home'))
         else:
             return super(StudentUpdateView, self).post(request, *args, **kwargs)
 
 
-def students_delete(request, sid):
-    return HttpResponse('<h1>Students Delete %s</h1>' % sid)
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'students/students_confirm_delete.html'
+
+    def get_success_url(self):
+        messages.success(self.request, u'Видалення студента пройшло успішно')
+        return reverse('home')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel_button'):
+            messages.info(self.request, u'Видалення студента відмінено')
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            return super(StudentDeleteView, self).post(request, *args, **kwargs)
 

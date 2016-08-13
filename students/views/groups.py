@@ -3,7 +3,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from ..models import Group
-from Classes.PaginatorCustom import PaginatorCustom,PageNotInteger,EmptyPage
+from Classes.PaginatorCustom import PaginatorCustom, PageNotInteger, EmptyPage
+from django.http.response import HttpResponseRedirect
+from django.views.generic import DeleteView
+from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.db.models import ProtectedError
 # Views for groups
 
 def groups_list(request):
@@ -31,5 +36,31 @@ def groups_add(request):
 def groups_edit(request, gid):
     return HttpResponse('<h1>Groups Edit %s</h1>' % gid)
 
-def groups_delete(request, gid):
-    return HttpResponse('<h1>Groups Delete %s</h1>' % gid)
+
+class GroupDeleteView(DeleteView):
+    model = Group
+    template_name = 'students/groups_confirm_delete.html'
+
+    def get_success_url(self):
+        messages.success(self.request, u'Групу успішно видалено')
+        return reverse('home')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel_button'):
+            messages.info(self.request, u'Видалення группи відмінено')
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            try:
+                return super(GroupDeleteView, self).post(request, *args, **kwargs)
+            except ProtectedError:
+                storage = messages.get_messages(request)
+                for _ in storage:
+                    pass
+                messages.warning(self.request, u'Поки в группі є студенти видалення неможливе')
+                return HttpResponseRedirect(reverse('groups_delete', kwargs={'pk': self.object.id}))
+            except Exception:
+                storage = messages.get_messages(request)
+                for _ in storage:
+                    pass
+                messages.warning(self.request, u'Непередбачувана помилка. Будь-ласка спробуйте пізніше')
+                return HttpResponseRedirect(reverse('home'))
