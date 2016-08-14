@@ -33,8 +33,8 @@ def groups_list(request):
 def groups_add(request):
     return HttpResponse('<h1>Groups Add Form</h1>')
 
-def groups_edit(request, gid):
-    return HttpResponse('<h1>Groups Edit %s</h1>' % gid)
+def groups_edit(request, pk):
+    return HttpResponse('<h1>Groups Edit %s</h1>' % pk)
 
 
 class GroupDeleteView(DeleteView):
