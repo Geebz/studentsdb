@@ -19,10 +19,13 @@ class StudentFormAdmin(ModelForm):
 class GroupFormAdmin(ModelForm):
 
     def clean_leader(self):
-        group = self.cleaned_data['leader'].student_group
-        if group and group != self.instance:
-            raise ValidationError(u'Студент навчається в іншій групі', code='invalid')
-        return self.cleaned_data['leader']
+        try:
+            group = self.cleaned_data['leader'].student_group
+            if group and group != self.instance:
+                raise ValidationError(u'Студент навчається в іншій групі', code='invalid')
+            return self.cleaned_data['leader']
+        except AttributeError:
+            return self.cleaned_data['leader']
 
 
 class StudentModel(admin.ModelAdmin):

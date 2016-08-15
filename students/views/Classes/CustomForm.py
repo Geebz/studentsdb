@@ -13,6 +13,7 @@ class CustomForm(ModelForm):
         self.helper.form_method = 'POST'
         self.helper.form_class = 'form-horizontal'
         self.helper.attrs = {'novalidate': ''}
+        self.helper.render_unmentioned_fields = True
 
         # set form field properties
         self.helper.help_text_inline = True
@@ -21,7 +22,7 @@ class CustomForm(ModelForm):
         self.helper.field_class = 'col-sm-10'
 
         # add buttons
-        self.helper.layout[-1] = FormActions(
+        self.helper.layout.append(FormActions(
             Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
             Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
-        )
+        ))

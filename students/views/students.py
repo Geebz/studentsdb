@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+
+from django.core.exceptions import ValidationError
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from ..models import Student, Group
@@ -7,7 +9,6 @@ from django.core.urlresolvers import reverse
 # from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
 from Classes.CustomForm import CustomForm
-from datetime import datetime
 from django.contrib import messages
 from django.views.generic import UpdateView, CreateView, DeleteView
 from django.forms import ModelForm
@@ -83,6 +84,12 @@ class StudentUpdateForm(CustomForm):
     def __init__(self, *args, **kwargs):
         super(StudentUpdateForm, self).__init__(*args, **kwargs)
         self.helper.form_action = reverse('students_edit', kwargs={'pk': kwargs['instance'].id})
+
+    def clean_student_group(self):
+        group = Group.objects.filter(leader=self.instance)
+        if len(group) > 0 and self.cleaned_data['student_group'] != group[0]:
+            raise ValidationError(u'Студент є старостою іншою групою', code='invalid')
+        return self.cleaned_data['student_group']
 
 
 class StudentAddForm(CustomForm):

@@ -40,10 +40,14 @@ class GroupCreateForm(CustomForm):
         model = Group
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(GroupCreateForm, self).__init__(*args, **kwargs)
+        self.helper.form_action = reverse('groups_add')
+
     def clean_leader(self):
         if self.cleaned_data['leader']:
             raise ValidationError(u'Данна група тільки створюється. Додати старосту неможливо')
-        return self.cleaned_data['leader']
+        # return self.cleaned_data['leader']
 
 
 class GroupUpdateForm(CustomForm):
@@ -51,11 +55,17 @@ class GroupUpdateForm(CustomForm):
         model = Group
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(GroupUpdateForm, self).__init__(*args, **kwargs)
+        self.helper.form_action = reverse('groups_edit', kwargs={'pk': kwargs['instance'].id})
+
     def clean_leader(self):
         # print type(self.cleaned_data['title'])
-        if self.cleaned_data['leader'].student_group != self.instance:
-            raise ValidationError(u'Студент навчається в іншій групі')
-        else:
+        try:
+            if self.cleaned_data['leader'].student_group != self.instance:
+                raise ValidationError(u'Студент навчається в іншій групі')
+            return self.cleaned_data['leader']
+        except AttributeError:
             return self.cleaned_data['leader']
 
 
@@ -64,6 +74,11 @@ class GroupCreateView(CreateView):
     template_name = 'group/groups_add_edit.html'
     form_class = GroupCreateForm
 
+    def get_context_data(self, **kwargs):
+        context = super(GroupCreateView, self).get_context_data(**kwargs)
+        context['title'] = u'Додавання групи'
+        return context
+
     def get_success_url(self):
         messages.success(self.request, u'Групу успішно додано')
         return reverse('home')
@@ -71,6 +86,7 @@ class GroupCreateView(CreateView):
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
             messages.info(self.request, u'Додавання групи відмінено')
+            return HttpResponseRedirect(reverse('home'))
         else:
             return super(GroupCreateView, self).post(request, *args, **kwargs)
 
@@ -80,6 +96,11 @@ class GroupUpdateView(UpdateView):
     template_name = 'group/groups_add_edit.html'
     form_class = GroupUpdateForm
 
+    def get_context_data(self, **kwargs):
+        context = super(GroupUpdateView, self).get_context_data(**kwargs)
+        context['title'] = u'Редагування групи'
+        return context
+
     def get_success_url(self):
         messages.success(self.request, u'Групу успішно відредаговано')
         return reverse('home')
@@ -87,6 +108,7 @@ class GroupUpdateView(UpdateView):
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
             messages.info(self.request, u'Додавання групи відмінено')
+            return HttpResponseRedirect(reverse('home'))
         else:
             return super(GroupUpdateView, self).post(request, *args, **kwargs)
 
