@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from ..models import Group, Student
 from Classes.PaginatorCustom import PaginatorCustom, PageNotInteger, EmptyPage
+from Classes.CustomForm import CustomForm
 from django.http.response import HttpResponseRedirect
 from django.views.generic import DeleteView, CreateView, UpdateView
 from django.contrib import messages
@@ -34,18 +35,18 @@ def groups_list(request):
     return render(request, 'group/groups.html', {'groups': groups})
 
 
-class GroupCreateForm(forms.ModelForm):
+class GroupCreateForm(CustomForm):
     class Meta:
         model = Group
         fields = '__all__'
 
     def clean_leader(self):
         if self.cleaned_data['leader']:
-            raise ValidationError(u'В группі не має ні одного студента. Будь-ласка додайте хоча б одного')
+            raise ValidationError(u'Данна група тільки створюється. Додати старосту неможливо')
         return self.cleaned_data['leader']
 
 
-class GroupUpdateForm(forms.ModelForm):
+class GroupUpdateForm(CustomForm):
     class Meta:
         model = Group
         fields = '__all__'

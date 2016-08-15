@@ -6,12 +6,13 @@ from ..models import Student, Group
 from django.core.urlresolvers import reverse
 # from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
+from Classes.CustomForm import CustomForm
 from datetime import datetime
 from django.contrib import messages
 from django.views.generic import UpdateView, CreateView, DeleteView
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button
+from crispy_forms.layout import Submit
 from crispy_forms.bootstrap import FormActions
 # Views for student
 
@@ -48,39 +49,47 @@ def students_list(request):
     return render(request, 'students/students_list.html', {'students': students})
 
 
-class StudentForm(ModelForm):
+# class StudentForm(ModelForm):
+#     class Meta:
+#         model = Student
+#         fields = '__all__'
+#
+#     def __init__(self, *args, **kwargs):
+#         super(StudentForm, self).__init__(*args, **kwargs)
+#
+#         self.helper = FormHelper(self)
+#         self.helper.form_method = 'POST'
+#         self.helper.form_class = 'form-horizontal'
+#         self.helper.attrs = {'novalidate': ''}
+#
+#         # set form field properties
+#         self.helper.help_text_inline = True
+#         self.helper.html5_required = True
+#         self.helper.label_class = 'col-sm-2 control-label'
+#         self.helper.field_class = 'col-sm-10'
+#
+#         # add buttons
+#         self.helper.layout[-1] = FormActions(
+#             Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
+#             Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
+#         )
+
+
+class StudentUpdateForm(CustomForm):
     class Meta:
         model = Student
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(StudentForm, self).__init__(*args, **kwargs)
-
-        self.helper = FormHelper(self)
-        self.helper.form_method = 'POST'
-        self.helper.form_class = 'form-horizontal'
-        self.helper.attrs = {'novalidate': ''}
-
-        # set form field properties
-        self.helper.help_text_inline = True
-        self.helper.html5_required = True
-        self.helper.label_class = 'col-sm-2 control-label'
-        self.helper.field_class = 'col-sm-10'
-
-        # add buttons
-        self.helper.layout[-1] = FormActions(
-            Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
-            Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
-        )
-
-
-class StudentUpdateForm(StudentForm):
-    def __init__(self, *args, **kwargs):
         super(StudentUpdateForm, self).__init__(*args, **kwargs)
         self.helper.form_action = reverse('students_edit', kwargs={'pk': kwargs['instance'].id})
 
 
-class StudentAddForm(StudentForm):
+class StudentAddForm(CustomForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+
     def __init__(self, *args, **kwargs):
         super(StudentAddForm, self).__init__(*args, **kwargs)
         self.helper.form_action = reverse('students_add')
