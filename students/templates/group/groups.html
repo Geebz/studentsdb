@@ -36,8 +36,8 @@
        {% for group in groups %}
           <tr>
              <td>{{ forloop.counter }}</td>
-             <td><a title="Редагувати" href="#">{{ group.title }}</a></td>
-             <td><a title="Редагувати" href="">
+             <td><a title="Редагувати" href="{% url 'groups_edit' group.id %}">{{ group.title }}</a></td>
+             <td><a title="Редагувати" href="{% url 'groups_edit' group.id %}">
                  {% if group.leader == None %}Старосту не вибрано
                  {% else %}{{ group.leader }}
                  {% endif %}

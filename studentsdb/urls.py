@@ -3,7 +3,7 @@ from django.contrib import admin
 from .settings import MEDIA_ROOT, DEBUG
 from students.views.contact_admin import ContactView
 from students.views.students import StudentUpdateView, StudentCreateView, StudentDeleteView
-from students.views.groups import GroupDeleteView
+from students.views.groups import GroupDeleteView, GroupCreateView, GroupUpdateView
 
 urlpatterns = patterns('',
     # Examples:
@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     url(r'^students/(?P<pk>\d+)/edit/$', StudentUpdateView.as_view(), name='students_edit'),
     url(r'^students/(?P<pk>\d+)/delete/$', StudentDeleteView.as_view(), name='students_delete'),
     url(r'^groups/$', 'students.views.groups.groups_list', name='groups'),
-    url(r'^groups/add/$', 'students.views.groups.groups_add', name='groups_add'),
-    url(r'^groups/(?P<pk>\d+)/edit/$', 'students.views.groups.groups_edit', name='groups_edit'),
+    url(r'^groups/add/$', GroupCreateView.as_view(), name='groups_add'),
+    url(r'^groups/(?P<pk>\d+)/edit/$', GroupUpdateView.as_view(), name='groups_edit'),
     url(r'^groups/(?P<pk>\d+)/delete/$', GroupDeleteView.as_view(), name='groups_delete'),
     url(r'^journal/$', 'students.views.journal.journal_list', name='journal'),
     url(r'^exams/$', 'students.views.exams.exams_list', name='exams'),

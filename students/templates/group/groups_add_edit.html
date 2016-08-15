@@ -1,0 +1,16 @@
+{% extends "students/base.html" %}
+{% load staticfiles %}
+
+{% block meta_title %}Додавання групи{% endblock meta_title %}
+
+{% block title %}Додавання групи{% endblock title %}
+
+{% block content %}
+    <form action="{% url "groups_edit" object.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Додати" name="add_button">
+        <input type="submit" value="Скасувати" name="cancel_button">
+        <p></p>
+    </form>
+{% endblock content %}
