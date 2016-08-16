@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-
-from django import forms
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.http import HttpResponse
-from ..models import Group, Student
+from ..models import Group
 from Classes.PaginatorCustom import PaginatorCustom, PageNotInteger, EmptyPage
 from Classes.CustomForm import CustomForm
 from django.http.response import HttpResponseRedirect
@@ -32,7 +30,7 @@ def groups_list(request):
         groups = paginator.page(1)
     except EmptyPage:
         groups = paginator.page(paginator.num_pages)
-    return render(request, 'group/groups.html', {'groups': groups})
+    return render(request, 'students/groups.html', {'groups': groups})
 
 
 class GroupCreateForm(CustomForm):
@@ -115,7 +113,14 @@ class GroupUpdateView(UpdateView):
 
 class GroupDeleteView(DeleteView):
     model = Group
-    template_name = 'group/groups_confirm_delete.html'
+    template_name = 'template_delete_confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupDeleteView, self).get_context_data(**kwargs)
+        context['title'] = u'Видалення групи'
+        context['name'] = u'групу'
+        context['url'] = reverse('groups_delete', kwargs={'pk': kwargs['object'].id})
+        return context
 
     def get_success_url(self):
         messages.success(self.request, u'Групу успішно видалено')

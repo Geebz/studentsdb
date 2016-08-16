@@ -144,7 +144,14 @@ class StudentUpdateView(UpdateView):
 
 class StudentDeleteView(DeleteView):
     model = Student
-    template_name = 'students/students_confirm_delete.html'
+    template_name = 'template_delete_confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentDeleteView, self).get_context_data(**kwargs)
+        context['title'] = u'Видалення студента'
+        context['name'] = u'студента'
+        context['url'] = reverse('students_delete', kwargs={'pk': kwargs['object'].id})
+        return context
 
     def get_success_url(self):
         messages.success(self.request, u'Видалення студента пройшло успішно')

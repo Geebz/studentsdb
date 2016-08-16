@@ -1,25 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
-from django.http import HttpResponse
-from ..models import Exam
-# from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
-from django.views.generic import CreateView, DeleteView, UpdateView
-from Classes.CustomForm import CustomForm
-# -*- coding: utf-8 -*-
 
-from django import forms
-from django.core.exceptions import ValidationError
+from ..models import Exam
 from django.shortcuts import render
 from django.http import HttpResponse
-from ..models import Group, Student
-from Classes.PaginatorCustom import PaginatorCustom, PageNotInteger, EmptyPage
 from Classes.CustomForm import CustomForm
 from django.http.response import HttpResponseRedirect
 from django.views.generic import DeleteView, CreateView, UpdateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.db.models import ProtectedError
 
 # Views for exams
 
@@ -33,7 +21,7 @@ def exams_list(request):
             exams = exams.reverse()
     else:
         exams = exams.order_by('name')
-    return render(request, 'exams/exams.html', {'exams': exams})
+    return render(request, 'students/exams.html', {'exams': exams})
 
 
 class ExamCreateForm(CustomForm):
@@ -99,5 +87,24 @@ class ExamUpdateView(UpdateView):
             return super(ExamUpdateView, self).post(request, *args, **kwargs)
 
 
-def exams_delete(request, pk):
-    return HttpResponse('<h1>Exam delete %s</h1>' % pk)
+class ExamDeleteView(DeleteView):
+    model = Exam
+    template_name = 'template_delete_confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ExamDeleteView, self).get_context_data(**kwargs)
+        context['title'] = u'Видалення іспиту'
+        context['name'] = u'іспит'
+        context['url'] = reverse('exams_delete', kwargs={'pk': kwargs['object'].id})
+        return context
+
+    def get_success_url(self):
+        messages.success(self.request, u'Іспит успішно Видалено!')
+        return reverse('home')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel_button'):
+            messages.info(self.request, u'Видалення іспита відмінено')
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            return super(ExamDeleteView, self).post(request, *args, **kwargs)
