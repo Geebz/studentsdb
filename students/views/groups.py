@@ -71,7 +71,7 @@ class GroupUpdateForm(CustomForm):
 
 class GroupCreateView(CreateView):
     model = Group
-    template_name = 'group/groups_add_edit.html'
+    template_name = 'template_add_edit.html'
     form_class = GroupCreateForm
 
     def get_context_data(self, **kwargs):
@@ -93,7 +93,7 @@ class GroupCreateView(CreateView):
 
 class GroupUpdateView(UpdateView):
     model = Group
-    template_name = 'group/groups_add_edit.html'
+    template_name = 'template_add_edit.html'
     form_class = GroupUpdateForm
 
     def get_context_data(self, **kwargs):

@@ -6,7 +6,7 @@
 {% block title %}База студентів{% endblock title %}
 
 {% block content %}
-    <a class="btn btn-primary" href="{% url "students_add" %}">Додати Новий Екзамен</a>
+    <a class="btn btn-primary" href="{% url "exams_add" %}">Додати Новий Екзамен</a>
    <!-- Start Students Listing -->
    <table class="table table-hover table-striped">
    {% with order_by=request.GET.order_by reverse=request.GET.reverse %}
@@ -32,6 +32,7 @@
          {% endif %}</a>
          </th>
          <th>Складають іспит</th>
+         <th>Дії</th>
       </tr>
    </thead>
    <tbody>
@@ -40,8 +41,8 @@
        <tr>
          <td>{{ forloop.counter }}
          </td>
-         <td><a title="Редагувати" href="#">{{ exam.name }}</a></td>
-         <td><a title="Редагувати" href="#">{{ exam.teacher }}</a></td>
+         <td><a title="Редагувати" href="{% url "exams_edit" exam.id %}">{{ exam.name }}</a></td>
+         <td><a title="Редагувати" href="{% url "exams_edit" exam.id %}">{{ exam.teacher }}</a></td>
          <td>
             <div class="dropdown">
                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
@@ -54,6 +55,25 @@
                          <a role="menuitem" tabindex="-1" href="{% url "groups_edit" group.id %}">{{ group }}</a>
                       </li>
                    {% endfor %}
+               </ul>
+            </div>
+         </td>
+         <td>
+             <div class="dropdown">
+               <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                  Дія
+                  <span class="caret"></span>
+               </button>
+               <ul class="dropdown-menu" role="menu">
+                  <li role="presentation">
+                     <a role="menuitem" tabindex="-1" href="#">Відвідування</a>
+                  </li>
+                  <li role="presentation">
+                     <a role="menuitem" tabindex="-1" href="{% url "exams_edit" exam.id %}">Редагувати</a>
+                  </li>
+                  <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="{% url "exams_delete" exam.id %}">Видалити</a>
+                  </li>
                </ul>
             </div>
          </td>

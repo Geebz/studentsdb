@@ -11,10 +11,6 @@ from Classes.PaginatorCustom import PaginatorCustom, EmptyPage, PageNotInteger
 from Classes.CustomForm import CustomForm
 from django.contrib import messages
 from django.views.generic import UpdateView, CreateView, DeleteView
-from django.forms import ModelForm
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-from crispy_forms.bootstrap import FormActions
 # Views for student
 
 
@@ -104,7 +100,7 @@ class StudentAddForm(CustomForm):
 
 class StudentCreateView(CreateView):
     model = Student
-    template_name = 'students/students_edit.html'
+    template_name = 'template_add_edit.html'
     form_class = StudentAddForm
 
     def get_success_url(self):
@@ -126,7 +122,7 @@ class StudentCreateView(CreateView):
 
 class StudentUpdateView(UpdateView):
     model = Student
-    template_name = 'students/students_edit.html'
+    template_name = 'template_add_edit.html'
     form_class = StudentUpdateForm
 
     def get_success_url(self):
@@ -160,16 +156,3 @@ class StudentDeleteView(DeleteView):
             return HttpResponseRedirect(reverse('home'))
         else:
             return super(StudentDeleteView, self).post(request, *args, **kwargs)
-
-
-# def students_delete(request, pk):
-#     student = Student.objects.get(pk=pk)
-#     if request.method == 'POST':
-#         if request.POST.get('cancel_button'):
-#             messages.info(request, u'Видалення студента відмінено')
-#             return HttpResponseRedirect(reverse('home'))
-#         else:
-#             student.delete()
-#             messages.success(request, u'Студента успішно видалено')
-#             return HttpResponseRedirect(reverse('home'))
-#     return render(request, 'students/students_confirm_delete.html', {'pk': pk, 'student': student})
